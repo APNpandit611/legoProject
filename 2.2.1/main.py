@@ -18,3 +18,6 @@ ev3 = EV3Brick()
 
 # Write your program here.
 ev3.speaker.beep()
+
+ev3.screen.print("Hello world")
+
