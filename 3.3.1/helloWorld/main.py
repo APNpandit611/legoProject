@@ -7,6 +7,19 @@ from pybricks.tools import wait, StopWatch, DataLog
 from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 
+from umqtt.robust import MQTTClient
+import time
+
+#MQTTsetup
+MQTT_ClientID='RobotA'
+MQTT_Broker='172.20.10.7'  #need to change!!
+MQTT_Topic_Status='Lego/Status'
+client=MQTTClient(MQTT_ClientID,MQTT_Broker,1883)
+
+#callback for listen to topics
+def listen(topic,msg):
+    if topic==MQTT_Topic_Status.encode():
+        ev3.screen.print(str(msg.decode()))
 
 # This program requires LEGO EV3 MicroPython v2.0 or higher.
 # Click "Open user guide" on the EV3 extension tab for more information.
@@ -14,32 +27,19 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 
 # Create your objects here.
 ev3 = EV3Brick()
-ultrasonic_sensor = UltrasonicSensor(Port.S4)
+
 
 # Write your program here.
+
+
+client.connect()
 ev3.speaker.beep()
 
-warning_distance_high = 50 
-warning_distance_medium = 30
+client.set_callback(listen)
+client.subscribe(MQTT_Topic_Status)
+ev3.screen.print('Hello World')
 
-robot = DriveBase(Motor(Port.B), Motor(Port.C), wheel_diameter=55.5, axle_track=104)
 
 while True:
-    distance = ultrasonic_sensor.distance()
-
-    if distance > warning_distance_high:
-        ev3.speaker.tone(500, 200)  
-    elif distance > warning_distance_medium:
-        ev3.speaker.tone(300, 200)  
-    else:
-        ev3.speaker.tone(100, 200) 
-
-    robot.drive(100, 0)  
-
-    wait(200)
-
-    if touch_sensor.pressed():
-        break
-
-robot.stop()
-ev3.speaker.beep()
+    client.check_msg()
+    time.sleep(0.5)
