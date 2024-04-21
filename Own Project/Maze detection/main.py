@@ -22,7 +22,7 @@ ev3 = EV3Brick()
 
 #sensors
 ultrasonic_sensor = UltrasonicSensor(Port.S1)
-color_sensor = ColorSensor(Port.S4)
+color_sensor = ColorSensor(Port.S2 )
 touch_sensor = TouchSensor(Port.S3)
 
 """
@@ -41,7 +41,7 @@ client.loop_start()
 """
 #ports
 left_motor = Motor(Port.B)
-right_motor = Motor(Port.A) 
+right_motor = Motor(Port.C) 
 robot = DriveBase(left_motor, right_motor, wheel_diameter = 54, axle_track = 105)
 base_speed = 50
 slow_speed = 25
