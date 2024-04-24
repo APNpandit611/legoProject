@@ -9,6 +9,7 @@ from pybricks.media.ev3dev import SoundFile, ImageFile
 import ev3dev2.motor as motor
 import ev3dev2.sensor as sensor
 import paho.mqtt.client as mqtt
+#from umqtt.robust import MQTTClient
 import time
 
 
@@ -26,6 +27,14 @@ color_sensor = ColorSensor(Port.S2 )
 touch_sensor = TouchSensor(Port.S3)
 
 """
+MQTT_ClientID = 'RobotA'
+MQTT_Broker = '172.20.10.3'
+MQTT_Topic_Hallo = 'python/course'
+MQTT_Topic_Sensor = "python/message"
+client = MQTTClient(MQTT_ClientID, MQTT_Broker)
+client.connect()
+client.publish(MQTT_Topic_Sensor, "initial_message")
+
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!")
