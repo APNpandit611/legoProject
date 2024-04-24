@@ -8,8 +8,8 @@ from pybricks.robotics import DriveBase
 from pybricks.media.ev3dev import SoundFile, ImageFile
 import ev3dev2.motor as motor
 import ev3dev2.sensor as sensor
-import paho.mqtt.client as mqtt
-#from umqtt.robust import MQTTClient
+
+from umqtt.robust import MQTTClient
 import time
 
 
@@ -35,18 +35,10 @@ client = MQTTClient(MQTT_ClientID, MQTT_Broker)
 client.connect()
 client.publish(MQTT_Topic_Sensor, "initial_message")
 
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
-        print("Connected to MQTT Broker!")
-    else:
-        print("Connection failed with code:", rc)
-
-client = mqtt.Client()
-client.on_connect = on_connect
-
-
-client.connect("your_broker_address", 1883)
-client.loop_start()
+def listen(topic, msg):
+    if topic == MQTT_Topic_Hallo.encode():
+        message = str(msg.decode())
+        ev3.screen.print(message)
 """
 #ports
 left_motor = Motor(Port.B)
