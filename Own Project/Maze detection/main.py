@@ -68,6 +68,8 @@ def followMaze():
 
         if colo_sensor.color == stop_color:
             break
+
+followMaze()
         
 
 """
