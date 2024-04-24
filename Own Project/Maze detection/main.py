@@ -22,9 +22,53 @@ import time
 ev3 = EV3Brick()
 
 #sensors
-ultrasonic_sensor = UltrasonicSensor(Port.S1)
-color_sensor = ColorSensor(Port.S2 )
-touch_sensor = TouchSensor(Port.S3)
+ultrasonic_sensor = UltrasonicSensor(Port.S3)
+color_sensor = ColorSensor(Port.S2)
+touch_sensor = TouchSensor(Port.S1)
+
+#motors
+left_motor = Motor(Port.B)
+right_motor = Motor(Port.C)
+
+robot = DriveBase(left_motor, right_motor, wheel_diameter = 54, axle_track = 150)
+
+base_speed = 40
+right_angle = 90
+left_angle = 180
+obstacle_threshold = 100
+
+#colors
+start_color = Color.GREEN
+stop_color = Color.RED
+
+def followMaze():
+    while True:
+        # wait until robot detectes the green color to start moving forward
+        while color_sensor.color() != start_color:
+            wait(2000)
+        
+        # move forward until obstacle is found
+        while ultrasonic_sensor.distance() >= obstacle_threshold:
+            left_motor.dc(base_speed)
+            right_motor.dc(base_speed)
+
+        # obstacle if found, turn 90 degrees to the right
+        drive(base_speed, right_angle)
+        wait(500)
+
+        #check for another obstacle after the turn. 
+        if ultrasonic_sensor.distance() < obstacle_threshold:
+            # second obstacle found
+            drive(base_speed, left_angle)
+            wait(500)
+
+        else:
+            left_motor.dc(base_speed)
+            right_motor.dc(base_speed)
+
+        if colo_sensor.color == stop_color:
+            break
+        
 
 """
 MQTT_ClientID = 'RobotA'
@@ -39,7 +83,7 @@ def listen(topic, msg):
     if topic == MQTT_Topic_Hallo.encode():
         message = str(msg.decode())
         ev3.screen.print(message)
-"""
+
 #ports
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.C) 
@@ -105,3 +149,4 @@ def detect_exit():
 follow_wall()
 detect_obstacle()
 detect_exit()
+"""
